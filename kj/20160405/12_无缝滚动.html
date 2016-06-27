@@ -1,0 +1,175 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style>
+.wrap {
+	width: 700px;
+	height: 280px;
+	border: 5px solid #000;
+	overflow: hidden;
+	position: relative; 
+	margin: 50px auto;
+}
+img {
+	vertical-align: top;
+}
+#list {
+	width: 700px;
+	position: absolute;
+	z-index: 1;
+	margin: 0; 
+	padding: 0;
+	list-style: none;
+	left: 0;
+	top: 0;
+}
+#navs {
+	position: absolute;
+	left: 0;
+	width: 100%;
+	padding: 5px 0;
+	text-align: center;
+	background: rgba(255, 255, 255, 0.5);
+	height: 20px;
+	bottom: 0px;
+	z-index: 2;
+}
+#navs a {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	background: #DDD;
+	margin: 0 3px;
+}
+#navs a.active{
+	background: #f60;
+}
+.btns {
+	width: 40px;
+	height: 40px;
+	background: #fff;
+	font: 30px / 40px "宋体";
+	color: #000;
+	position: absolute;
+	top: 120px;
+	z-index: 3;
+	text-decoration: none;
+	text-align: center;
+	opacity: .5;
+	filter: alpha(opacity=50);
+	transition: .3s opacity;
+}
+.btns:hover {
+	opacity: 1;
+	filter: alpha(opacity=100);
+}
+.btns:nth-of-type(1) {
+	left: 0px;
+}
+.btns:nth-of-type(2) {
+	right: 0px;
+}
+</style>
+<script src="startMove.js"></script>
+<script>
+window.onload = function (){
+	var wrap = document.getElementById("wrap");
+	var prevBtn = document.getElementById("prev");
+	var nextBtn = document.getElementById("next");
+	var navs = document.getElementById("navs");
+	var navsA = navs.getElementsByTagName("a");
+	var list = document.getElementById("list");
+	var li = list.getElementsByTagName("li");
+	var liH = css(li[0], "height");
+	var str = '';
+	var now = 0;
+	for(var i = 0; i < li.length-1; i++){
+		str += "<a href='javascript:;'></a>"
+	}
+	navs.innerHTML = str;
+	navsA[0].className = "active";
+	for(var i = 0; i < navsA.length; i++){
+		navsA[i].index = i;	
+		navsA[i].onmouseover = function (){
+			for(var i = 0; i < navsA.length; i++) {
+				navsA[i].className = "";
+			}
+			navsA[this.index].className = "active";
+			startMove(list,"top",400,-this.index*liH,"easeOut");
+			now = this.index;
+		};
+	}
+	nextBtn.onclick = function() {
+		if(now >= navsA.length){ /* 判断已经是第二组的第0张 */
+			now = 0;  /* 把left拉倒第一组的第0张，开始重新走 */
+			list.style.top = 0;
+		}
+		now++;
+		for(var i = 0; i < navsA.length; i++) {
+			navsA[i].className = "";
+		}
+		navsA[now%navsA.length].className = "active";
+		startMove(list,"top",400,-(now)*liH,"easeOut");
+	};
+	prevBtn.onclick = function() {
+		if(now <= 0){ //判断现在已经是第0个了，再往前减的话，就没有了
+			now = navsA.length; //把元素同步到 第二组的第0个，重新开始走
+			list.style.top = -now*liH +"px";
+		}
+		now--;
+		for(var i = 0; i < navsA.length; i++) {
+			navsA[i].className = "";
+		}
+		navsA[now%navsA.length].className = "active";
+		startMove(list,"top",400,-now*liH,"easeOut");
+	};
+};
+</script>
+</head>
+<body>
+<section class="wrap" id="wrap">
+	<ul id="list">
+    	<li>
+        	<a href="#">
+            	<img src="img/img1.jpg" />
+            </a>
+        </li>
+        <li>
+        	<a href="#">
+            	<img src="img/img2.jpg" />
+            </a>
+        </li>
+        <li>
+        	<a href="#">
+            	<img src="img/img3.jpg" />
+            </a>
+        </li>
+        <li>
+        	<a href="#">
+            	<img src="img/img4.jpg" />
+            </a>
+        </li>
+        <li>
+        	<a href="#">
+            	<img src="img/img5.jpg" />
+            </a>
+        </li>
+        <li>
+        	<a href="#">
+            	<img src="img/img6.jpg" />
+            </a>
+        </li>
+        <li>
+        	<a href="#">
+            	<img src="img/img1.jpg" /> <!--把 第一组手动 复制一份 -->
+            </a>
+        </li>
+    </ul>
+    <nav id="navs"></nav>
+    <a href="javascript:;" class="btns" id="prev">&lt;</a>
+    <a href="javascript:;" class="btns" id="next">&gt;</a>
+</section>
+</body>
+</html>
